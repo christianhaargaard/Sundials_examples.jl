@@ -51,7 +51,7 @@ function rhs(
   x1 = x[1]
   xdot[1] = a*b*cos(b*t)
 
-  return int32(0)
+  return Int32(0)
 end
 
 function true_solution(
@@ -89,11 +89,11 @@ function load_states()
 end
 
 function calcsens_finitedif(parameters :: Array{Float64,1}; step = sqrt(1e-6))
-  (x, data)        = load_states()  :: (Array{Float64,1}, UserData)
+  (x, data)        = load_states()  :: Tuple{Array{Float64,1}, UserData}
   data.parameters  = parameters     :: Array{Float64,1}
   xdot             = zeros(x)       :: Array{Float64,1}
-  t                = linspace(0,10,101)       :: Array{Float64,1}
-  (reltol, abstol,sens_tol) = (1e-8, 1e-6, 1e-6) :: (Float64,Float64, Float64)
+  t                = collect(linspace(0,10,101))       :: Array{Float64,1}
+  (reltol, abstol,sens_tol) = (1e-8, 1e-6, 1e-6) :: Tuple{Float64,Float64, Float64}
   neq = length(x)
   NS = length(parameters)
 
@@ -115,11 +115,11 @@ function calcsens_finitedif(parameters :: Array{Float64,1}; step = sqrt(1e-6))
 end
 
 function runsens(parameters :: Array{Float64,1})
-  (x, data)        = load_states()  :: (Array{Float64,1}, UserData)
+  (x, data)        = load_states()  :: Tuple{Array{Float64,1}, UserData}
   data.parameters  = parameters     :: Array{Float64,1}
   xdot             = zeros(x)       :: Array{Float64,1}
-  t                = linspace(0,10,101)         :: Array{Float64,1}
-  (reltol, abstol,sens_tol) = (1e-8, 1e-6, 1e-6) :: (Float64,Float64, Float64)
+  t                = collect(linspace(0,10,101))         :: Array{Float64,1}
+  (reltol, abstol,sens_tol) = (1e-8, 1e-6, 1e-6) :: Tuple{Float64,Float64, Float64}
   neq = length(x)
   NS = length(parameters)
 
@@ -137,7 +137,7 @@ function runsens(parameters :: Array{Float64,1})
 
 
   # List of parameters for which to calculate sensitivities
-  plist = plist = [int32(i) :: Int32 for i in 1:NS]
+  plist = round(Int32,1:NS)
   println(plist)
 
   # scaling of parameters
@@ -164,7 +164,7 @@ function runsens(parameters :: Array{Float64,1})
   #                         Sensitivity settigs                         #
   #######################################################################
   
-  sensi_meth = int32(Sundials.CV_SIMULTANEOUS) # CV_SIMULTANEOUS, CV_STAGGERED or CV_STAGGERED1
+  sensi_meth = Int32(Sundials.CV_SIMULTANEOUS) # CV_SIMULTANEOUS, CV_STAGGERED or CV_STAGGERED1
   flag = Sundials.CVodeSensInit1(cvode_mem, NS, sensi_meth, 0, yS);
   flag = Sundials.CVodeSensEEtolerances(cvode_mem);
   flag = Sundials.CVodeSetSensErrCon(cvode_mem, 0);
@@ -200,7 +200,7 @@ end
 #                          Plot results                               #
 #######################################################################
  
-t = linspace(0,10,101);
+t = collect(linspace(0,10,101));
 (x, data) = load_states()
 
 (solution, sens) = runsens(data.parameters)
