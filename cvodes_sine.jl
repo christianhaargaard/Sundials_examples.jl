@@ -16,9 +16,9 @@
 using Sundials
 
 # Uncomment this to use QT interface for PyPlot
-#using PyCall
-#@pyimport(matplotlib)
-#pygui(:qt)
+using PyCall
+@pyimport(matplotlib)
+pygui(:qt)
 using PyPlot
 
 
@@ -78,8 +78,8 @@ function true_sens(
 
   a             = data.parameters[1] :: Float64
   b             = data.parameters[2] :: Float64
-  sens[:,1,1] =  sin(b*t) :: Array{Float64,1}
-  sens[:,1,2] =  t.*a.*cos(b*t) :: Array{Float64,1}
+  sens[:,1,1] =  sin(b*t)            :: Array{Float64,1}
+  sens[:,1,2] =  t.*a.*cos(b*t)      :: Array{Float64,1}
 
   return sens
 end
@@ -89,13 +89,13 @@ function load_states()
 end
 
 function calcsens_finitedif(parameters :: Array{Float64,1}; step = sqrt(1e-6))
-  (x, data)        = load_states()  :: Tuple{Array{Float64,1}, UserData}
-  data.parameters  = parameters     :: Array{Float64,1}
-  xdot             = zeros(x)       :: Array{Float64,1}
-  t                = collect(linspace(0,10,101))       :: Array{Float64,1}
-  (reltol, abstol,sens_tol) = (1e-8, 1e-6, 1e-6) :: Tuple{Float64,Float64, Float64}
-  neq = length(x)
-  NS = length(parameters)
+  (x, data)                 = load_states()               :: Tuple{Array{Float64,1}, UserData}
+  data.parameters           = parameters                  :: Array{Float64,1}
+  xdot                      = zeros(x)                    :: Array{Float64,1}
+  t                         = collect(linspace(0,10,101)) :: Array{Float64,1}
+  (reltol, abstol,sens_tol) = (1e-8, 1e-6, 1e-6)          :: Tuple{Float64,Float64, Float64}
+  neq                       = length(x)
+  NS                        = length(parameters)
 
   sols = zeros(length(t),neq,NS) # No need to copy initial condition, they are already zero
   sens = zeros(length(t),neq,NS) # No need to copy initial condition, they are already zero
@@ -115,13 +115,13 @@ function calcsens_finitedif(parameters :: Array{Float64,1}; step = sqrt(1e-6))
 end
 
 function runsens(parameters :: Array{Float64,1})
-  (x, data)        = load_states()  :: Tuple{Array{Float64,1}, UserData}
-  data.parameters  = parameters     :: Array{Float64,1}
-  xdot             = zeros(x)       :: Array{Float64,1}
-  t                = collect(linspace(0,10,101))         :: Array{Float64,1}
-  (reltol, abstol,sens_tol) = (1e-8, 1e-6, 1e-6) :: Tuple{Float64,Float64, Float64}
-  neq = length(x)
-  NS = length(parameters)
+  (x, data)                 = load_states()               :: Tuple{Array{Float64,1}, UserData}
+  data.parameters           = parameters                  :: Array{Float64,1}
+  xdot                      = zeros(x)                    :: Array{Float64,1}
+  t                         = collect(linspace(0,10,101)) :: Array{Float64,1}
+  (reltol, abstol,sens_tol) = (1e-8, 1e-6, 1e-6)          :: Tuple{Float64,Float64, Float64}
+  neq                       = length(x)
+  NS                        = length(parameters)
 
 
   #######################################################################
